@@ -1,0 +1,51 @@
+
+table.tableizer-table {
+	width: 90%;
+	font-size: 12px;
+	border: 1px solid #CCC; 
+	font-family: Arial, Helvetica, sans-serif;
+	
+} 
+table.nested-table {
+	width: 100%;
+	font-size: 12px;
+	border: 1px solid #CCC; 
+	font-family: Arial, Helvetica, sans-serif;
+}
+.tableizer-table td {
+	
+	border: 1px solid #CCC;
+}
+.tableizer-table th {
+	background-color: #104E8B; 
+	color: #FFF;
+	font-weight: bold;
+}
+.headLabel { 
+    grid-column: 1 / span 13;
+}
+.month-table {
+	position: absolute;
+  	top: 0;
+  	bottom: 0;
+  	left: 0;
+  	right: 0;
+  	width: 100%;
+	height: 100%;
+}
+.nested-table input {
+	width: 50%; /* Example width */
+  	float: right;
+}
+.td-month {
+	position: relative;
+}
+table.month-table tr {
+	height: calc(100%/6);
+
+}
+td input[type="number"] {
+	width: 100%;
+	height: 100%;
+	box-sizing: border-box;
+}
