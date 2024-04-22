@@ -1,0 +1,72 @@
+.App {
+  text-align: center;
+  background-color: white;
+  width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  justify-content: center;
+  align-items: center;
+  }
+
+  .form{
+    color: white;
+    text-align: center;
+  }
+  
+  .label{
+
+   display: block;
+   font-size: larger;
+   color: navy;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+  }
+    
+  .input{
+  font-size: larger;
+  padding: 5px;
+  margin: 2px;
+  width: 200px;
+  }
+  
+  .container {
+    width: 300px; /* Adjust width as needed */
+    margin: 0 auto;
+  }
+  
+  .btn{
+  color: navy;
+  background-color: white;
+  border-radius: 5px;
+  font-size: larger;
+  display: block;
+  padding: 5px;
+  margin: 10px auto;
+  }
+  
+  .messages{
+  display: flex;
+  justify-content: center;
+  }
+  
+  .error{
+  display: block;
+  background-color: red;
+  color: white;
+  width: fit-content;
+  height: 50px;
+  padding: 5px;
+  }
+  
+  .success{
+  display: block;
+  background-color: lightblue;
+  color: black;
+  width: fit-content;
+  height: 50px;
+  padding: 5px;
+  }

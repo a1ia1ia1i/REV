@@ -1,0 +1,53 @@
+.proForm {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px; /* Space between columns */
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+   
+  .proForma-container {
+      display: flex;
+      flex-direction: row; /* Aligns children in a row instead of a column */
+      justify-content: space-around; /* Spaces out the child elements */
+      max-width: 1000px;
+      margin: 20px auto;
+      font-family: Arial, sans-serif;
+    }
+    
+    .summary, .calculated-compensations {
+      flex: 1; /* Each child takes up an equal amount of space */
+      margin: 0 10px; /* Adds some space between the columns */
+    }
+    
+    .form-row {
+      display: flex;
+      justify-content: space-between; /* Aligns the label and input */
+      padding: 8px 0;
+    }
+    
+    .form-row label, .form-row input {
+      flex-basis: 45%; /* Each takes up nearly half of the row */
+    }
+    
+    .calculated-compensations p, .summary p {
+      margin: 8px 0;
+      padding: 4px;
+    }
+    
+    /* Adjustments for visual separation and emphasis */
+    .calculated-compensations h3, .summary h3 {
+      text-align: center;
+      color: white;
+    }
+  
+    .error-message {
+      color: black;
+      margin: 10px 0;
+      background-color: red;
+      font-weight: bolder;
+    }
+
+    ul{
+        list-style-type: none;
+    }
