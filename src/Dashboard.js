@@ -1,17 +1,18 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import NavigationBar from './NavigationBar';
+import { AuthContext } from './contexts/authcontext';
+import './navbar.css';
 
 
-function Dashboard({ setLoggedIn }) {
-  const handleLogout = () => {
-    setLoggedIn(false);
-  }
- 
+function Dashboard() {
+  const { handleLogout } = useContext(AuthContext);
+  
+  
 
   return (
     <div className="dashboard">
       <NavigationBar />
-      <button onClick={handleLogout}>Logout</button>
+      <button style={{ float: 'right' }} onClick={handleLogout}>Logout</button>
     </div>
     
   );

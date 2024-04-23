@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate} from 'react-router-dom';
 import Start from './StartPage';
 import LoginForm from './pages/Login';
@@ -6,37 +6,36 @@ import RegistrationForm from './pages/Registration';
 import Header from './Header'
 import './App.css';
 import Year1 from './Year1';
-import ReverseEvaluation from './pages/ReverseEvaluation';
 import ProForma from './pages/proForma';
 import Year2 from './Year2Form';
 import Year3 from './Year3Form';
+import { AuthContext } from './contexts/authcontext';
+import ReverseEvaluation from './pages/ReverseEvaluation';
 import Depreciation from './pages/depreciation';
 
+
 function App() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { isLoggedIn } = useContext(AuthContext);
+  const { userID } = useContext(AuthContext);
 
-  const handleLogin = () => {
-    // Perform login logic, set loggedIn to true upon successful login
-    setLoggedIn(true);
-  };
-
+  
   return (
-    <div>
+    <div className="AppContainer">
     <Header />
     <Router>
-      <Routes>
-        <Route path="/" element={loggedIn ? <Navigate to="/start" /> : <LoginForm isLoggedIn={handleLogin} />} />
-        <Route path="/login" element={loggedIn ? <Navigate to="/start" /> : <LoginForm isLoggedIn={handleLogin} />} />
-        <Route path="/start" element={loggedIn ? <Start setLoggedIn={setLoggedIn} /> : <Navigate to="/" />} />
-        {/* Route for registration */}
-        <Route path="/register" element={<RegistrationForm setLoggedIn={setLoggedIn}/>} />
-        <Route path="/revForm" element={<ReverseEvaluation setLoggedIn={setLoggedIn}/> } />
-        <Route path="/proForma" element={<ProForma setLoggedIn={setLoggedIn}/> } />
-        <Route path="/year1" element={<Year1 setLoggedIn={setLoggedIn}/> } />
-        <Route path="/year2" element={<Year2 setLoggedIn={setLoggedIn}/> } />
-        <Route path="/year3" element={<Year3 setLoggedIn={setLoggedIn}/> } />
-        <Route path="/depreciation" element={<Depreciation setLoggedIn={setLoggedIn}/>} />
-      </Routes>
+        <Routes>
+          <Route path="/" element={<LoginForm/>} />
+          <Route path="/login" element={<LoginForm/>} />
+          <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/start" element={isLoggedIn ? <Start/> : <Navigate to="/" />} />
+          <Route path="/proForma" element={isLoggedIn ? <ProForma/> : <Navigate to="/" />} />
+          <Route path="/revForm" element={isLoggedIn ? <ReverseEvaluation/> : <Navigate to="/"/>} />
+          <Route path="/year1" element={isLoggedIn ? <Year1/> : <Navigate to="/" />} />
+          <Route path="/year2" element={isLoggedIn ? <Year2/> : <Navigate to="/" />} />
+          <Route path="/year3" element={isLoggedIn ? <Year3/> : <Navigate to="/" />} />
+          <Route path="/depreciation" element={isLoggedIn ? <Depreciation/> : <Navigate to="/" />} />
+        </Routes>
+
     </Router>
     </div>
   );
