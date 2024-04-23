@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import './styling/proforma.css';
-
+import Dashboard from '../Dashboard';
+import { AuthContext } from '../contexts/authcontext';
+import { proFormaSubmit, proFormaGet } from '../api'
 function ProForma() {
+  const { mainFormID } = useContext(AuthContext);
   const [values, setValues] = useState({
     startYear: '',
     startMonth: '',
@@ -100,6 +103,8 @@ function ProForma() {
     );
   } else {
     return (
+      <>
+      <Dashboard/>
       <form onSubmit={handleSubmit} className = "proForm">
       <label>
       <div className="form-row">
@@ -174,6 +179,7 @@ function ProForma() {
       {errorMessage && <div className="error-message">{errorMessage}</div>}
     <button type="submit">Submit</button>
     </form>
+    </>
     );
   }
 }

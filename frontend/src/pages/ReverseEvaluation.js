@@ -1,16 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+
 import RevenueChart from './ RevenueChart';
+
 import "./styling/Rev.css"
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import { Link } from 'react-router-dom';
 import ReactDOMServer from 'react-dom/server';
 import { openPdfWindow } from './PdfGenerator';
-
-
+import Dashboard from '../Dashboard';
+import { AuthContext } from '../contexts/authcontext';
+import { revFormSubmit, revFormGet } from '../api'
 
 function ReverseEvaluation() {
-  // Calculations for Invest Table
+  const { mainFormID } = useContext(AuthContext);
   const [lastYearsRevenue, setLastYearsRevenue] = useState(0);
   const [amountNeeded, setAmountNeeded] = useState(0);
   const [totalMarket, settotalMarket] = useState(0);
@@ -752,23 +755,22 @@ const prepareDataString = () => {
 
   return (
     <div>
-      <nav className="rev_navbar">
-        <Link to="/" className="rev_home-button">Home</Link> 
-      </nav>
-    <div id="form-content" className="container">
-      <h1 className="RevTitle">How To Reverse Engineer Valuation</h1>
+      <Dashboard />
+      
+    <div id="form-content" className="rev-container">
+      <h1 className="rev-title">Reverse Engineer Valuation</h1>
       <table>
         <tr>
-          <td>Last Year's Total Revenue (if relevant)</td>
-          <td><input type="float" value={`$${lastYearsRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`} onChange={(e) => {
+          <td  className="rev-table">Last Year's Total Revenue (if relevant)</td>
+          <td><input className="input-table" type="float" value={`$${lastYearsRevenue.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`} onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9.]/g, '');
                         setLastYearsRevenue(parseFloat(value) || 0); 
                     }}
                     placeholder="$1,000,000"/></td>
         </tr>
         <tr>
-          <td>How much $$ do you need/want?</td>
-          <td><input type="float" value={`$${amountNeeded.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`} onChange={(e) => {
+          <td className="rev-table">How much $$ do you need/want?</td>
+          <td><input className="input-table" type="float" value={`$${amountNeeded.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`} onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9.]/g, '');
                         setAmountNeeded(parseFloat(value) || 0); 
                     }}
@@ -776,92 +778,83 @@ const prepareDataString = () => {
            
         </tr>
         <tr>
-          <td>Multiplier the investor expects (e.g. 2-10X)</td>
+          <td className="rev-table">Multiplier the investor expects (e.g. 2-10X)</td>
           <td>
-            <input type="integer" value={multiplierExpected} onChange={(e) => setMultiplierExpected(e.target.value.replace(/[^0-9.]/g, ''))} /></td>
+            <input className="input-table" type="integer" value={multiplierExpected} onChange={(e) => setMultiplierExpected(e.target.value.replace(/[^0-9.]/g, ''))} /></td>
         </tr>
         <tr>
-          <td>Amount $$$$$ the investor hopes for @Exit</td>
-          <td>{`$${amountHopedForExit.toLocaleString(undefined, {maximumFractionDigits:2}) || ''}`}</td>
+          <td className="rev-table">Amount $$$$$ the investor hopes for @Exit</td>
+          <td >{`$${amountHopedForExit.toLocaleString(undefined, {maximumFractionDigits:2}) || ''}`}</td>
         </tr>
         <tr>
-          <td>What % of equity are you giving up (e.g. 5-25%)?</td>
-          <td><input type="integer" value={`${equityPercentage}%`} onChange={(e) => setEquityPercentage(e.target.value.replace(/[^0-9.]/g, ''))} /></td>
+          <td className="rev-table">What % of equity are you giving up (e.g. 5-25%)?</td>
+          <td><input className="input-table" type="integer" value={`${equityPercentage}%`} onChange={(e) => setEquityPercentage(e.target.value.replace(/[^0-9.]/g, ''))} /></td>
         </tr>
         <tr>
-          <td>What company needs to be worth @ Year 3</td>
+          <td className="rev-table">What company needs to be worth @ Year 3</td>
           <td>{`$${companyWorthAtYear3.toLocaleString(undefined, {maximumFractionDigits:2}) || ''}`}</td>
         </tr>
         <tr>
-          <td>Multiplier of revenue expected at exit (e.g. 2X)</td>
-          <td><input type="integer" value={revenueMultiplierExit} onChange={(e) => setRevenueMultiplierExit(e.target.value)} /></td>
+          <td className="rev-table">Multiplier of revenue expected at exit (e.g. 2X)</td>
+          <td><input className="input-table" type="integer" value={revenueMultiplierExit} onChange={(e) => setRevenueMultiplierExit(e.target.value)} /></td>
         </tr>
         <tr>
-          <td>Revenue needed year 3 based upon multiplier</td>
+          <td className="rev-table">Revenue needed year 3 based upon multiplier</td>
           <td>{`$${revenueNeededYear3.toLocaleString(undefined, {maximumFractionDigits:2}) || ''}`}</td>
         </tr>
         <tr>
-          <td>Growth Projection % per year (e.g. 500%)</td>
-          <td><input type="integer" value={`${growthProjection}%`} onChange={(e) => setGrowthProjection(e.target.value.replace(/[^0-9.]/g, ''))} disabled={lastYearsRevenue > 0} /></td>
+          <td className="rev-table">Growth Projection % per year (e.g. 500%)</td>
+          <td><input className="input-table" type="integer" value={`${growthProjection}%`} onChange={(e) => setGrowthProjection(e.target.value.replace(/[^0-9.]/g, ''))} disabled={lastYearsRevenue > 0} /></td>
         </tr>
         <tr>
-          <td  className="EffectiveTable">Effective Interest in 3 Year</td>
+          <td  className="rev-table">Effective Interest in 3 Year</td>
           <td>{typeof effectiveInterest3Years === "number" ? effectiveInterest3Years.toLocaleString(undefined, {style: "percent", maximumFractionDigits: 1}) : effectiveInterest3Years}</td>
         </tr>
         <tr>
-          <td>Effective Interest in 5 Years</td>
+          <td className="rev-table">Effective Interest in 5 Years</td>
           <td>{typeof effectiveInterest5Years === "number" ? effectiveInterest5Years.toLocaleString(undefined, {style: "percent", maximumFractionDigits: 1}) : effectiveInterest5Years}</td>
         </tr>
         <tr>
-          <td>Effective Interest in 7 Years</td>
+          <td className="rev-table">Effective Interest in 7 Years</td>
           <td>{typeof effectiveInterest7Years === "number" ? effectiveInterest7Years.toLocaleString(undefined, {style: "percent", maximumFractionDigits: 1}) : effectiveInterest7Years}</td>
         </tr>
       </table>
       <table>
         <tr>
-          <td>Reality Check #1: What is the total market? </td>
-          <td><input type="float" value={`$${totalMarket.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`} onChange={(e) => {
+          <td className="rev-table1">Reality Check #1: What is the total market? </td>
+          <td><input className="input-table" type="float" value={`$${totalMarket.toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`} onChange={(e) => {
                         const value = e.target.value.replace(/[^0-9.]/g, '');
                         settotalMarket(parseFloat(value) || 0); 
                     }}
                     placeholder="$1,000,000"/></td>
         </tr>
         <tr>
-              <td>Market Capture at Year 5:</td>
+              <td className="rev-table1" >Market Capture at Year 5:</td>
               <td>{capturedAtYear5.toFixed(2)}%</td>
         </tr>
 
   
     </table>
-      <table>
-    
-        <tr>
-          <td>Reality Check #2: If my year 5 is this value then</td>
-          <td></td>
-        </tr>
-        <tr>
-          <td></td>
-        </tr>
-    </table>
+     
    
       <table className="RevenueTable">
         <thead>
-          <tr>
-            <th>Year</th>
-            <th>% Year 3</th>
-            <th>Revenue</th>
+          <tr className="rev-table">
+            <th className="year3">Year</th>
+            <th className="year3">% Year 3</th>
+            <th className="year3">Revenue</th>
             <th>Force to</th>
           </tr>
         </thead>
         <tbody>
         {[0, 1, 2, 3, 4, 5].map((year) => (
             <tr key={year}>
-              <td>{year}</td>
-              <td>{`${(calculatePercentYear3(year) * 100).toFixed(0)}%`}</td>
-              <td>{`$${calculateRevenue(year).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}</td>
-              <td>
+              <td className="year3">{year}</td>
+              <td className="year3">{`${(calculatePercentYear3(year) * 100).toFixed(0)}%`}</td>
+              <td className="year3">{`$${calculateRevenue(year).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}</td>
+              <td className="year3">
                 {year === 3 ? '100%' : year === 0 ? '0%' : (
-                  <input
+                  <input className="input-table"
                     type="integer"
                     value={forceTo[year]}
                     onChange={(e) => {
@@ -880,21 +873,21 @@ const prepareDataString = () => {
       <table className="Yaer1Table">
         <thead>
           <tr>
-            <th className="segment-column">Customer Segments At Year 1</th>
-            <th>Avg Revenue/Customer</th>
-            <th>Quick Modeling as % of Revenue</th>
-            <th>Revenue</th>
-            <th className="customers-column">Customers</th>
-            <th>Your %</th>
-            <th>Revenue</th>
-            <th className="customers-column">Customers</th>
+            <th className="segment-column, rev-table">Customer Segments At Year 1</th>
+            <th className="rev-table">Avg Revenue/Customer</th>
+            <th className="rev-table">Quick Modeling as % of Revenue</th>
+            <th className="rev-table">Revenue</th>
+            <th className="customers-column, rev-table">Customers</th>
+            <th className="rev-table">Your %</th>
+            <th className="rev-table">Revenue</th>
+            <th className="customers-column, rev-table">Customers</th>
           </tr>
         </thead>
         <tbody>
           {segmentNames.slice(0, visibleRowsYear1).map((segmentName, index) => (
              <tr key={index}>
               <td>
-                <input
+                <input className="input-segment"
                   type="string"
                   value={segmentName}
                   onChange={(e) => {
@@ -905,7 +898,7 @@ const prepareDataString = () => {
                 />
               </td>
               <td>
-                <input
+                <input className="input-table"
                   type="float"
                   value={`$${avgRevenuePerCustomer[index]}`}
                   onChange={(e) => handleAvgRevenueChange(index, e.target.value.replace(/[^0-9.]/g, ''))
@@ -917,7 +910,7 @@ const prepareDataString = () => {
               <td>{`$${ revenue1[index].toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}</td>
               <td>{customers1[index]}</td>
               <td>
-                <input
+                <input className="input-table"
                   type="float"
                   value={`${yourPercent[index]}%`}
                   onChange={(e) => {
@@ -928,7 +921,7 @@ const prepareDataString = () => {
                 />
               </td>
               <td>${revenue2[index].toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
-              <td> <input
+              <td> <input className="input-table"
               type="number"
               value={customers2Year1[index]}
               onChange={(e) => handleCustomers2Year1Change(index, e.target.value)}
@@ -943,23 +936,23 @@ const prepareDataString = () => {
         </tbody>
       </table>
       <table className="Yaer2Table">
-        <thead>
+        <thead  >
           <tr>
-            <th className="segment-column">Customer Segments At Year 2</th>
-            <th>Avg Revenue/Customer</th>
-            <th>Quick Modeling as % of Revenue</th>
-            <th>Revenue</th>
-            <th className="customers-column">Customers</th>
-            <th>Your %</th>
-            <th>Revenue</th>
-            <th className="customers-column">Customers</th>
+            <th className="segment-column, rev-table">Customer Segments At Year 2</th>
+            <th className="rev-table">Avg Revenue/Customer</th>
+            <th className="rev-table">Quick Modeling as % of Revenue</th>
+            <th className="rev-table">Revenue</th>
+            <th className="customers-column, rev-table">Customers</th>
+            <th className="rev-table">Your %</th>
+            <th className="rev-table">Revenue</th>
+            <th className="customers-column, rev-table">Customers</th>
           </tr>
-        </thead>
-        <tbody>
+        </thead >
+        <tbody > 
           {segmentNamesYear2.slice(0, visibleColumnsYear2).map((segmentNameYear2, index) => (
-            <tr key={index}>
-              <td>
-                <input
+            <tr key={index} >
+              <td >
+                <input className="input-segment"
                   type="string"
                   value={segmentNamesYear2[index]}
                   onChange={(e) => {
@@ -970,7 +963,7 @@ const prepareDataString = () => {
                 />
               </td>
               <td className="SegName">
-                <input
+                <input className="input-table"
                   type="float"
                   value={`$${avgRevenuePerCustomerYear2[index]}`}
                   onChange={(e) => handleAvgRevenueChangeYear2(index, e.target.value.replace(/[^0-9.]/g, ''))}
@@ -980,7 +973,7 @@ const prepareDataString = () => {
               <td>${revenue1Year2[index].toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</td>
               <td>{customers1Year2[index]}</td>
               <td>
-                <input
+                <input className="input-table"
                   type="float"
                   value={`${yourPercentYear2[index]}%`}
                   onChange={(e) => {
@@ -992,7 +985,7 @@ const prepareDataString = () => {
               </td>
               <td>{`$${revenue2Year2[index].toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}</td>
               <td> 
-              <input
+              <input className="input-table"
               type="number"
               value={customers2Year2[index]}
               onChange={(e) => handleCustomers2Year2Change(index, e.target.value)}
@@ -1008,21 +1001,21 @@ const prepareDataString = () => {
       <table className="Yaer3Table">
         <thead>
           <tr>
-            <th className="segment-column">Customer Segments At Year 3</th>
-            <th>Avg Revenue/Customer</th>
-            <th>Quick Modeling as % of Revenue</th>
-            <th>Revenue</th>
-            <th className="customers-column">Customers</th>
-            <th>Your %</th>
-            <th>Revenue</th>
-            <th className="customers-column">Customers</th>
+            <th className="segment-column, rev-table">Customer Segments At Year 3</th>
+            <th className="rev-table">Avg Revenue/Customer</th>
+            <th className="rev-table">Quick Modeling as % of Revenue</th>
+            <th className="rev-table">Revenue</th>
+            <th className="customers-column, rev-table">Customers</th>
+            <th className="rev-table">Your %</th>
+            <th className="rev-table">Revenue</th>
+            <th className="customers-column, rev-table">Customers</th>
           </tr>
         </thead>
         <tbody>
         {segmentNamesYear3.slice(0, visibleColumnsYear3).map((segmentNameYear3, index) => (
             <tr key={index}>
               <td>
-                <input
+                <input className="input-segment"
                   type="string"
                   value={segmentNamesYear3[index]}
                   onChange={(e) => {
@@ -1033,7 +1026,7 @@ const prepareDataString = () => {
                 />
               </td>
               <td>
-              <input
+              <input  className="input-table"
                   type="float"
                   value={`$${avgRevenuePerCustomerYear3[index]}`}
                   onChange={(e) => handleAvgRevenueChangeYear3(index, e.target.value.replace(/[^0-9.]/g, ''))}
@@ -1043,7 +1036,7 @@ const prepareDataString = () => {
               <td>{`$${revenue1Year3[index].toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}</td>
               <td>{customers1Year3[index]}</td>
               <td>
-                <input
+                <input className="input-table"
                   type="float"
                   value={`${yourPercentYear3[index]}%`}
                   onChange={(e) => {
@@ -1054,7 +1047,7 @@ const prepareDataString = () => {
                 />
               </td>
               <td>{`$${revenue2Year3[index].toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}`}</td>
-              <td> <input
+              <td> <input className="input-table"
               type="number"
               value={customers2Year3[index]}
               onChange={(e) => handleCustomers2Year3Change(index, e.target.value)}

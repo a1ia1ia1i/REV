@@ -3,7 +3,7 @@
     display: flex;
     justify-content: center; /* Centers children horizontally */
     align-items: center; /* Centers children vertically */
-    background-color: navy; /* Your container's background color */
+    background-color: #02021e; /* Your container's background color */
 }
 
 /* Circle container */
@@ -23,5 +23,5 @@
 }
 
 .swap { 
-  color: navy;
+  color: #02021e;
 }

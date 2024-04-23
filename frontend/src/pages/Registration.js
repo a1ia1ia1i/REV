@@ -81,9 +81,7 @@ display: error ? '' : 'none',
 
 return (
 <div className="form">
-<div>
-<h1>User Registration</h1>
-</div>
+
 
 {/* Calling to the methods */}
 <div className="messages">
@@ -96,6 +94,7 @@ return (
     <div class="circle-container">
     <div class="form-elements">
 {/* Labels and inputs for form data */}
+
 <label className="label">Username</label>
 <input onChange={handleName} className="input"
 value={name} type="text" />
@@ -109,7 +108,7 @@ value={email} type="email" />
 value={password} type="password" />
 
 <button onClick={handleSubmit} className="btn" type="submit">
-Submit
+Sign Up
 </button>
 <p class = "swap">Already signed up? <Link to = "/login"> Click Here</Link></p>
     </div>
