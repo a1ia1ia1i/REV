@@ -1,1 +1,1 @@
-web: cd backend && gunicorn revnj.wsgi
+web: gunicorn backend.REVyourSTARTUP.wsgi --log-file -
