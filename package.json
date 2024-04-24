@@ -2,8 +2,7 @@
     "name": "rev-monorepo",
     "version": "1.0.0",
     "scripts": {
-      "build": "cd frontend && npm install && npm run build",
-      "start": "cd backend && python manage.py runserver"
+      "build": "npm --prefix frontend install && npm --prefix frontend run build"
     },
     "engines": {
       "node": "14.x",
