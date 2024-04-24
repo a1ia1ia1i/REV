@@ -68,7 +68,7 @@ CORS_ALLOWED_ORIGINS = [
     # Add other origins as needed for your frontend
 ]
 
-WSGI_APPLICATION = 'REVyourSTARTUP.wsgi.application'
+WSGI_APPLICATION = 'backend.REVyourSTARTUP.wsgi.application'
 
 # Database
 DATABASES = {
