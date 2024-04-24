@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import environ
 import os, sys
+import dj_database_url
 from corsheaders.defaults import default_headers
 
 # Initialize Environment Variabales
@@ -99,15 +100,16 @@ WSGI_APPLICATION = 'REVyourSTARTUP.wsgi.application'
 #     }
 # }
 
+#DATABASES = {
+ #      'ENGINE': 'django.db.backends.mysql',
+  #     'USER': env('DATABASE_USER'),
+   #     'PASSWORD': env("DATABASE_PASS"),
+    #    'HOST': 'localhost',
+     #   'PORT': '3306',
+  #  }
+#}
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DATABASE_NAME'),
-        'USER': env('DATABASE_USER'),
-        'PASSWORD': env("DATABASE_PASS"),
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
+    'default': dj_database_url.config(conn_max_age=600, ssl_require=True)
 }
 
 #Covers regular testing and django-coverage
